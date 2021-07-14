@@ -7,8 +7,10 @@ function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+let shops = [];
+
 // constructor function
-function Shops(location, CustomerMin, CustomerMax, avgperSale) {
+function Shop(location, CustomerMin, CustomerMax, avgperSale) {
     this.cityLocation = location;
     this.min = CustomerMin;
     this.max = CustomerMax;
@@ -16,30 +18,26 @@ function Shops(location, CustomerMin, CustomerMax, avgperSale) {
     this.randomCustomers = [];
     this.avgCOOKIES = [];
     this.total = 0;
+    shops.push(this);
 
 }
 
-let Seattle = new Shops('Seattle', 23, 65, 6.3);
-// console.log(Seattle);
-let Tokyo = new Shops('Tokyo', 3, 24, 1.2);
-let Dubai = new Shops('Dubai', 11, 38, 3.7);
-let Paris = new Shops('Paris', 20, 38, 2.3);
-let Lima = new Shops('Lima', 2, 16, 4.6);
+let Seattle = new Shop('Seattle', 23, 65, 6.3);
+let Tokyo = new Shop('Tokyo', 3, 24, 1.2);
+let Dubai = new Shop('Dubai', 11, 38, 3.7);
+let Paris = new Shop('Paris', 20, 38, 2.3);
+let Lima = new Shop('Lima', 2, 16, 4.6);
 
 
 
-Shops.prototype.count = function () {
+Shop.prototype.count = function () {
     for (let i = 0; i < hours.length; i++) {
         this.randomCustomers.push(random(this.min, this.max))
     }
 }
-Seattle.count();
-Tokyo.count();
-Dubai.count();
-Paris.count();
-Lima.count();
 
-Shops.prototype.sellCookies = function () {
+
+Shop.prototype.sellCookies = function () {
     for (let i = 0; i < hours.length; i++) {
 
         this.avgCOOKIES.push(Math.floor(this.randomCustomers[i] * this.avg))
@@ -47,66 +45,108 @@ Shops.prototype.sellCookies = function () {
 
     }
 }
-Seattle.sellCookies();
-Tokyo.sellCookies();
-Dubai.sellCookies();
-Paris.sellCookies();
-Lima.sellCookies();
-
-Shops.prototype.render = function () {
 
 
 
-    //Table part
-    let parent = document.getElementById('dailyLocationsTotal');
+// global table for all elements
+let parent = document.getElementById('parent');
+let table = document.createElement('table');
+parent.appendChild(table);
+console.log(parent);
 
-    //create table
-    let table = document.createElement('table');
-
-    // Append
-    parent.appendChild(table);
-
-    // creating the header row
+// function for header
+function makeHeader() {
     let headerRow = document.createElement('tr');
-
-    //Append
     table.appendChild(headerRow);
 
-    // make the heading
+    let firstHeader = document.createElement('th');
+    headerRow.appendChild(firstHeader);
+    firstHeader.textContent = 'Shop';
 
     for (let i = 0; i < hours.length; i++) {
-        let Header = document.createElement('th');
-        headerRow.appendChild(Header);
-        // text content
-        Header.textContent = hours[i]
+        let hoursRow = document.createElement('th');
+        headerRow.appendChild(hoursRow);
+        hoursRow.textContent = hours[i];
 
     }
+    let lastHeader = document.createElement('th');
+    headerRow.appendChild(lastHeader);
+    lastHeader.textContent = 'Daily location totoal';
 
-    // the Data rows
-    let shopLocation = ['Seattle', 'Tokyo', 'Dubai', 'Paris', 'Lima'];
+}
 
-    for (let i = 0; i < shopLocation.length; i++) {
-        let shopsRow = document.createElement('tr');
-        table.appendChild(shopsRow);
 
-        let Data = document.createElement('td');
-        shopsRow.appendChild(Data);
 
-        Data.textContent = shopLocation[i];
+// render method function for table
+Shop.prototype.render = function () {
+    let cityRow = document.createElement('tr');
+    table.appendChild(cityRow);
+
+    let cityName = document.createElement('td');
+    cityRow.appendChild(cityName);
+
+    cityName.textContent = this.cityLocation;
+
+    for (let i = 0; i < hours.length; i++) {
+        let cookiesTd = document.createElement('td');
+        cityRow.appendChild(cookiesTd);
+        cookiesTd.textContent = this.avgCOOKIES[i];
 
     }
+    let totalTd = document.createElement('td');
+    cityRow.appendChild(totalTd);
 
-
-
+    totalTd.textContent = this.total;
 
 
 }
 
-Seattle.render();
-Tokyo.render();
-Dubai.render();
-Paris.render();
-Lima.render();
+// footer function
+
+function makeFooter() {
+    // make the row
+    let footerRow = document.createElement('tr');
+    table.appendChild(footerRow);
+
+    let firstCell = document.createElement('th');
+
+    footerRow.appendChild(firstCell);
+    firstCell.textContent = 'Totals';
+
+    let totalOfTotals = 0;
+
+    for (let i = 0; i < hours.length; i++) {
+        let total = 0;
+        for (let j = 0; j < shops.length; j++) {
+            total += shops[j].avgCOOKIES[i];
+
+            totalOfTotals += shops[j].avgCOOKIES[i];
+
+        }
+        let footerTh = document.createElement('th');
+        footerRow.appendChild(footerTh);
+        footerTh.textContent = total;
+
+    }
+    let lastTh = document.createElement('th');
+    footerRow.appendChild(lastTh);
+    lastTh.textContent = totalOfTotals;
+
+
+}
+
+
+makeHeader();
+// making for loop to call each method for each location
+
+for (let i = 0; i < shops.length; i++) {
+    shops[i].count();
+    shops[i].sellCookies();
+    shops[i].render();
+
+}
+
+makeFooter();
 
 
 
