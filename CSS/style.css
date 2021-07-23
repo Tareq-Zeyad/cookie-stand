@@ -17,7 +17,7 @@ main section img {
 }
 
 body {
-    background-color: whitesmoke;
+    background-color: rgb(190, 189, 189);
 }
 
 header{
@@ -37,4 +37,9 @@ a {
     font-size: 20px;
       color:rgb(43, 39, 39);
       font-weight: bold;
+}
+
+fieldset {
+    background-color: whitesmoke;
+    color: teal;
 }
