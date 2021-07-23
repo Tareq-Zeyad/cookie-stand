@@ -75,6 +75,10 @@ function makeHeader() {
 
 }
 
+makeHeader();
+
+
+
 
 
 // render method function for table
@@ -101,7 +105,62 @@ Shop.prototype.render = function () {
 
 }
 
-// footer function
+// get form by id
+let cookieshop = document.getElementById('form');
+
+// add event listener
+cookieshop.addEventListener('submit', submitter);
+
+function submitter (event) {
+    console.log(event);
+    event.preventDefault();
+
+    let city= event.target.LocationName.value;
+    console.log(city)
+
+    let maxCustomer= parseInt (event.target.MaxCustomer.value);
+    console.log(maxCustomer)
+
+    let minCustomer= parseInt (event.target.MinCustomer.value);
+    console.log(minCustomer)
+
+    let Avgcookies= parseInt (event.target.Avg.value);
+    console.log(Avgcookies)
+
+    let addCity= new Shop(city, maxCustomer, minCustomer, Avgcookies);
+
+    
+
+    table.textContent="";
+    addCity.count();
+    addCity.sellCookies();
+
+    makeHeader();
+
+    for (let i = 0; i < shops.length; i++) {
+       
+        shops[i].render();
+    
+    }
+
+    makeFooter();
+
+    
+}
+
+
+
+
+
+// making for loop to call each method for each location
+for (let i = 0; i < shops.length; i++) {
+    shops[i].count();
+    shops[i].sellCookies();
+    shops[i].render();
+
+}
+
+
 
 function makeFooter() {
     // make the row
@@ -131,22 +190,9 @@ function makeFooter() {
     let lastTh = document.createElement('th');
     footerRow.appendChild(lastTh);
     lastTh.textContent = totalOfTotals;
-
-
 }
-
-
-makeHeader();
-// making for loop to call each method for each location
-
-for (let i = 0; i < shops.length; i++) {
-    shops[i].count();
-    shops[i].sellCookies();
-    shops[i].render();
-
-}
-
 makeFooter();
+
 
 
 
